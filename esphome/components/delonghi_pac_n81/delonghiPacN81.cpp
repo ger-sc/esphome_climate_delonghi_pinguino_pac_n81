@@ -59,8 +59,8 @@ void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
     if (t < DELONGHI_TEMP_MIN || t > DELONGHI_TEMP_MAX) {
       ESP_LOGW(TAG, "Temperature %d out of bounds", t);
     } else {
-      temp_ = (t - 16) << 2;
-      ESP_LOGI(TAG, "Temperature set to %d", t);
+      temp_ = (t - 16) << 8;
+      ESP_LOGI(TAG, "Temperature set to %d which is %02X", t, temp_);
     }
   }
 
