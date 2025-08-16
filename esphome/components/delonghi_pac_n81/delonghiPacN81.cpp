@@ -18,7 +18,19 @@ climate::ClimateTraits DelonghiPacN81Climate::traits() {
   return traits;
 }
 
-void DelonghiPacN81Climate::setup() { ESP_LOGCONFIG(TAG, "Setting up Delonghi Pinguino Climate..."); }
+void DelonghiPacN81Climate::setup() {
+  ESP_LOGCONFIG(TAG, "Setting up Delonghi Pinguino Climate...");
+  // restore set points
+  auto restore = this->restore_state_();
+  if (restore.has_value()) {
+    restore->apply(this);
+  } else {
+    // restore from defaults
+    this->mode = climate::CLIMATE_MODE_OFF;
+    this->fan_mode = climate::CLIMATE_FAN_LOW;
+    this->target_temperature = 24;
+  }
+}
 
 void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
   if (call.get_mode().has_value()) {
