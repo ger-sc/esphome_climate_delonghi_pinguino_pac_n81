@@ -23,9 +23,6 @@ class DelonghiPacN81Climate : public climate::Climate, public Component {
  protected:
   void send_nec_code(uint16_t address, uint16_t command, uint16_t repeats = 1);
   remote_transmitter::RemoteTransmitterComponent *transmitter_{nullptr};
-  climate::ClimateMode current_mode_ = climate::CLIMATE_MODE_OFF;
-  esphome::optional<esphome::climate::ClimateFanMode> current_fan_mode_ = climate::CLIMATE_FAN_LOW;
-  float target_temperature_ = 24.0;
   uint16_t mode_;
   uint16_t fan_;
   const uint16_t address_ = 0x48;

@@ -14,6 +14,7 @@ climate::ClimateTraits DelonghiPacN81Climate::traits() {
   traits.set_visual_max_temperature(delonghi_pac_n81::DELONGHI_TEMP_MAX);
   traits.set_supports_two_point_target_temperature(false);
   traits.set_visual_temperature_step(1.0f);
+
   return traits;
 }
 
@@ -22,20 +23,19 @@ void DelonghiPacN81Climate::setup() { ESP_LOGCONFIG(TAG, "Setting up Delonghi Pi
 void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
   if (call.get_mode().has_value()) {
     this->mode = *call.get_mode();
-    current_mode_ = this->mode;
-    if (current_mode_ == climate::CLIMATE_MODE_DRY) {
+    if (this->mode == climate::CLIMATE_MODE_DRY) {
       mode_ = 0x4000;
       command_ = 0x0088;
       ESP_LOGI(TAG, "Set mode to dry");
-    } else if (current_mode_ == climate::CLIMATE_MODE_FAN_ONLY) {
+    } else if (this->mode == climate::CLIMATE_MODE_FAN_ONLY) {
       mode_ = 0x8000;
       command_ = 0x0088;
       ESP_LOGI(TAG, "Set mode to fan only");
-    } else if (current_mode_ == climate::CLIMATE_MODE_COOL) {
+    } else if (this->mode == climate::CLIMATE_MODE_COOL) {
       mode_ = 0x1000;
       command_ = 0x0088;
       ESP_LOGI(TAG, "Set mode to cool");
-    } else if (current_mode_ == climate::CLIMATE_MODE_OFF) {
+    } else if (this->mode == climate::CLIMATE_MODE_OFF) {
       command_ = 0x0001;
       ESP_LOGI(TAG, "Set mode to off");
     }
@@ -43,8 +43,7 @@ void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
 
   if (call.get_target_temperature().has_value()) {
     this->target_temperature = *call.get_target_temperature();
-    target_temperature_ = this->target_temperature;
-    int t = (int) target_temperature_;
+    int t = (int) this->target_temperature;
     if (t < DELONGHI_TEMP_MIN || t > DELONGHI_TEMP_MAX) {
       ESP_LOGW(TAG, "Temperature %d out of bounds", t);
     } else {
@@ -55,14 +54,13 @@ void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
 
   if (call.get_fan_mode().has_value()) {
     this->fan_mode = *call.get_fan_mode();
-    current_fan_mode_ = this->fan_mode;
-    if (current_fan_mode_ == climate::CLIMATE_FAN_LOW) {
+    if (this->fan_mode == climate::CLIMATE_FAN_LOW) {
       fan_ = 0x0200;
       ESP_LOGI(TAG, "Set fan to low");
-    } else if (current_fan_mode_ == climate::CLIMATE_FAN_MEDIUM) {
+    } else if (this->fan_mode == climate::CLIMATE_FAN_MEDIUM) {
       fan_ = 0x0400;
       ESP_LOGI(TAG, "Set fan to medium");
-    } else if (current_fan_mode_ == climate::CLIMATE_FAN_HIGH) {
+    } else if (this->fan_mode == climate::CLIMATE_FAN_HIGH) {
       fan_ = 0x0800;
       ESP_LOGI(TAG, "Set fan to high");
     }
