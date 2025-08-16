@@ -3,6 +3,8 @@
 namespace esphome {
 namespace delonghi_pac_n81 {
 
+static const char *TAG = "delonghi_pac_n81";
+
 climate::ClimateTraits DelonghiPacN81Climate::traits() {
   auto traits = climate::ClimateTraits();
   traits.set_supported_modes({climate::CLIMATE_MODE_OFF, climate::CLIMATE_MODE_COOL, climate::CLIMATE_MODE_FAN_ONLY,
@@ -13,6 +15,8 @@ climate::ClimateTraits DelonghiPacN81Climate::traits() {
   traits.set_visual_temperature_step(1.0f);
   return traits;
 }
+
+void DelonghiPacN81Climate::setup() { ESP_LOGCONFIG(TAG, "Setting up Delonghi Pinguino Climate..."); }
 
 void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
   if (call.get_mode().has_value()) {
