@@ -12,6 +12,7 @@ climate::ClimateTraits DelonghiPacN81Climate::traits() {
   traits.set_supported_fan_modes({climate::CLIMATE_FAN_LOW, climate::CLIMATE_FAN_MEDIUM, climate::CLIMATE_FAN_HIGH});
   traits.set_visual_min_temperature(delonghi_pac_n81::DELONGHI_TEMP_MIN);
   traits.set_visual_max_temperature(delonghi_pac_n81::DELONGHI_TEMP_MAX);
+  traits.set_supports_two_point_target_temperature(false);
   traits.set_visual_temperature_step(1.0f);
   return traits;
 }
