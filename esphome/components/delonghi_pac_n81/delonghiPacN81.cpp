@@ -16,7 +16,12 @@ climate::ClimateTraits DelonghiPacN81Climate::traits() {
   return traits;
 }
 
-void DelonghiPacN81Climate::setup() { ESP_LOGCONFIG(TAG, "Setting up Delonghi Pinguino Climate..."); }
+void DelonghiPacN81Climate::setup() {
+  ESP_LOGCONFIG(TAG, "Setting up Delonghi Pinguino Climate...");
+  if (!this->target_temperature) {
+    this->target_temperature = this->target_temperature_;
+  }
+}
 
 void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
   if (call.get_mode().has_value()) {
@@ -44,7 +49,12 @@ void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
     this->target_temperature = *call.get_target_temperature();
     target_temperature_ = this->target_temperature;
     int t = (int) target_temperature_;
-    set_temp_code(t);
+    if (t < DELONGHI_TEMP_MIN || t > DELONGHI_TEMP_MAX) {
+      ESP_LOGW(TAG, "Temperature %d out of bounds", t);
+    } else {
+      temp_ = (t - 16) << 2;
+      ESP_LOGI(TAG, "Temperature set to %d", t);
+    }
   }
 
   if (call.get_fan_mode().has_value()) {
@@ -78,14 +88,6 @@ void DelonghiPacN81Climate::send_nec_code(uint16_t address, uint16_t command, ui
 
   // Option A: direkte, templatisierte Methode (empfohlen)
   this->transmitter_->transmit<esphome::remote_base::NECProtocol>(data, 1, 0);
-}
-
-void DelonghiPacN81Climate::set_temp_code(int inputTemp) {
-  if (inputTemp < DELONGHI_TEMP_MIN || inputTemp > DELONGHI_TEMP_MAX) {
-    ESP_LOGW(TAG, "Temperature %d out of bounds", inputTemp);
-  }
-  temp_ = (inputTemp - 16) << 2;
-  ESP_LOGI(TAG, "Temperature set to %d", inputTemp);
 }
 
 }  // namespace delonghi_pac_n81
