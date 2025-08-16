@@ -87,6 +87,9 @@ void DelonghiPacN81Climate::send_nec_code(uint16_t address, uint16_t command, ui
     ESP_LOGW(TAG, "Transmitter not defined!");
     return;
   }
+
+  ESP_LOGI(TAG, "sending address: 0x%02X, command: 0x%02X", address, command);
+
   esphome::remote_base::NECData data;
   data.address = address;
   data.command = command;
