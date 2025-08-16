@@ -42,8 +42,8 @@ void DelonghiPacN81Climate::control(const climate::ClimateCall &call) {
   }
 
   if (call.get_target_temperature().has_value()) {
-    this->target_temperature_high = *call.get_target_temperature();
-    target_temperature_ = this->target_temperature_high;
+    this->target_temperature = *call.get_target_temperature();
+    target_temperature_ = this->target_temperature;
     int t = (int) target_temperature_;
     if (t < DELONGHI_TEMP_MIN || t > DELONGHI_TEMP_MAX) {
       ESP_LOGW(TAG, "Temperature %d out of bounds", t);
